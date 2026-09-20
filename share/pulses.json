@@ -1,0 +1,122 @@
+[
+  {
+    "category": "DEV",
+    "text": "Avant un déploiement, imaginer le retour arrière peut rendre la suite plus sereine."
+  },
+  {
+    "category": "DEV",
+    "text": "Un petit changement bien expliqué donne un point de départ au prochain diagnostic."
+  },
+  {
+    "category": "DEV",
+    "text": "Un test qui raconte un incident passé peut éviter de devoir le raconter encore."
+  },
+  {
+    "category": "DEV",
+    "text": "Un pipeline lisible aide aussi la personne qui le découvre pendant une astreinte."
+  },
+  {
+    "category": "DEV",
+    "text": "Automatiser une étape répétitive laisse davantage de place aux décisions qui demandent du recul."
+  },
+  {
+    "category": "DEV",
+    "text": "Une revue peut commencer par une question simple : comment observer ce changement en production ?"
+  },
+  {
+    "category": "DEV",
+    "text": "Garder les migrations modestes peut faciliter leur compréhension et leur reprise."
+  },
+  {
+    "category": "DEV",
+    "text": "Un journal de déploiement peut être bref : quoi, pourquoi, et comment revenir."
+  },
+  {
+    "category": "DEV",
+    "text": "Documenter une exception aide à décider plus tard si elle mérite de rester."
+  },
+  {
+    "category": "DEV",
+    "text": "Un environnement reproductible commence souvent par une dépendance rendue explicite."
+  },
+  {
+    "category": "SYS",
+    "text": "Avant de relancer un service, prendre quelques notes peut préserver des indices utiles."
+  },
+  {
+    "category": "SYS",
+    "text": "Une sauvegarde mérite aussi un scénario de restauration que l’on sait expliquer."
+  },
+  {
+    "category": "SYS",
+    "text": "Une alerte utile donne une piste de décision à la personne qui la reçoit."
+  },
+  {
+    "category": "SYS",
+    "text": "Lors d’un diagnostic, distinguer les faits des hypothèses peut alléger la discussion."
+  },
+  {
+    "category": "SYS",
+    "text": "Un graphe devient plus parlant quand on sait quelle question lui poser."
+  },
+  {
+    "category": "SYS",
+    "text": "Un seuil peut se discuter à partir d’un usage, pas seulement d’une valeur ronde."
+  },
+  {
+    "category": "SYS",
+    "text": "Noter la raison d’un réglage peut épargner une enquête à la prochaine rotation."
+  },
+  {
+    "category": "SYS",
+    "text": "Un runbook gagne à préciser le moment où il vaut mieux s’arrêter et demander du renfort."
+  },
+  {
+    "category": "SYS",
+    "text": "Réduire le périmètre d’une investigation peut aider à trouver le prochain test utile."
+  },
+  {
+    "category": "SYS",
+    "text": "Une passation peut tenir en trois points : observations, essais, questions ouvertes."
+  },
+  {
+    "category": "AI",
+    "text": "Une anomalie détectée par un modèle reste une invitation à regarder le contexte."
+  },
+  {
+    "category": "AI",
+    "text": "Avant de confier une action à un agent, définir sa limite rend sa tâche plus claire."
+  },
+  {
+    "category": "AI",
+    "text": "Un exemple où le modèle se trompe peut apporter autant qu’une bonne prédiction."
+  },
+  {
+    "category": "AI",
+    "text": "Comparer une approche AIOps à une règle simple peut éclairer ce qu’elle apporte."
+  },
+  {
+    "category": "AI",
+    "text": "Une donnée manquante mérite parfois une explication avant de recevoir une valeur par défaut."
+  },
+  {
+    "category": "AI",
+    "text": "Garder une trace des critères d’évaluation aide à comprendre les changements d’un modèle."
+  },
+  {
+    "category": "AI",
+    "text": "Pour une suggestion automatisée, demander les éléments observables peut guider la vérification."
+  },
+  {
+    "category": "AI",
+    "text": "Une dérive se comprend mieux quand on distingue évolution des usages et défaut de collecte."
+  },
+  {
+    "category": "AI",
+    "text": "Prévoir une reprise humaine fait partie du travail d’automatisation."
+  },
+  {
+    "category": "SYS",
+    "text": "Un retour d’astreinte peut devenir une amélioration précise, sans chercher un responsable."
+  }
+]

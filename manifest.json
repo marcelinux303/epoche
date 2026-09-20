@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "marcelinux.ops-pulse",
+  "name": "Ops Pulse",
+  "version": "1.0.0",
+  "author": "marcelinux",
+  "license": "MIT",
+  "description": "Une pause discrète en français pour DevOps, SysOps et AIOps.",
+  "kinds": ["panel"],
+  "keepLoaded": true,
+  "entryPoints": { "panel": "Pulse.qml" }
+}
