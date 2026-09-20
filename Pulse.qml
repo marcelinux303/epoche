@@ -90,11 +90,11 @@ Item {
         onLoaded: {
             root.corpus = PulseModel.parseCorpus(text());
             if (!root.corpus.length)
-                console.warn("Ops Pulse: empty or invalid corpus: " + path);
+                console.warn("Epoché: empty or invalid corpus: " + path);
             root.corpusReady = true;
         }
         onLoadFailed: {
-            console.warn("Ops Pulse: failed to load corpus: " + path);
+            console.warn("Epoché: failed to load corpus: " + path);
             root.corpus = [];
             root.corpusReady = true;
         }
@@ -155,7 +155,7 @@ Item {
         implicitWidth: card.width
         implicitHeight: card.height
         color: "transparent"
-        WlrLayershell.namespace: "marcelinux-ops-pulse"
+        WlrLayershell.namespace: "marcelinux-epoche"
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
         exclusionMode: ExclusionMode.Ignore

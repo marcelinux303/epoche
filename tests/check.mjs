@@ -53,7 +53,7 @@ for (let n = 0; n <= 1000; n++) {
   lastDuration = duration;
 }
 assert.equal(model.durationFor(null), 5000);
-const id = 'marcelinux.ops-pulse';
+const id = 'marcelinux.epoche';
 const entry = {id, intervalMinutes:45, custom:{preserve:true}};
 const updated = model.updatedEntry(entry, id, '60');
 assert.equal(updated.intervalMinutes,60);
@@ -186,7 +186,7 @@ for (const raw of [read('share/pulses.json'), '[]', '{', JSON.stringify([corpus[
   assert.equal(state.corpus.length,valid ? 30 : 0);
   assert.equal(warnings.length,valid ? 0 : 1);
   if (!valid) {
-    assert.match(warnings[0], /Ops Pulse:.*corpus: \/plugin\/share\/pulses.json/);
+    assert.match(warnings[0], /Epoché:.*corpus: \/plugin\/share\/pulses.json/);
     assert.match(warnings[0],raw === null ? /failed to load/ : /empty or invalid/);
   }
   state.canRun = valid;

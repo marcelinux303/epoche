@@ -26,7 +26,7 @@ BorderSurface {
         spacing: Style.space(10)
         Text {
             width: parent.width
-            text: "OPS PULSE  ·  " + card.category
+            text: "EPOCHÉ  ·  " + card.category
             textFormat: Text.PlainText
             wrapMode: Text.WordWrap
             elide: Text.ElideNone

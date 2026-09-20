@@ -1,6 +1,6 @@
-# Ops Pulse — Omarchy Quattro
+# Epoché — Omarchy Quattro
 
-Plugin natif `marcelinux.ops-pulse`, version 1.0.0, auteur marcelinux, licence
+Plugin natif `marcelinux.epoche`, version 1.0.0, auteur marcelinux, licence
 [MIT](LICENSE). Une carte discrète propose une des 30 phrases françaises locales,
 réparties en DEV, SYS et AI. Aucune phrase ne prétend connaître l’état du système.
 
@@ -53,20 +53,20 @@ par l’URL Git publiée du dépôt.
 
 ```sh
 omarchy plugin add <url> --enable
-omarchy-shell shell summon marcelinux.ops-pulse
-omarchy-shell shell call marcelinux.ops-pulse setInterval 60
+omarchy-shell shell summon marcelinux.epoche
+omarchy-shell shell call marcelinux.epoche setInterval 60
 ```
 
 Gestion du plugin :
 
 ```sh
-omarchy plugin disable marcelinux.ops-pulse
-omarchy plugin enable marcelinux.ops-pulse
-omarchy plugin update marcelinux.ops-pulse
-omarchy plugin remove marcelinux.ops-pulse
+omarchy plugin disable marcelinux.epoche
+omarchy plugin enable marcelinux.epoche
+omarchy plugin update marcelinux.epoche
+omarchy plugin remove marcelinux.epoche
 ```
 
-Le réglage est enregistré dans l’objet d’identifiant `marcelinux.ops-pulse` du
+Le réglage est enregistré dans l’objet d’identifiant `marcelinux.epoche` du
 tableau `plugins` de `~/.config/omarchy/shell.json`, sous `intervalMinutes`.
 **Disable supprime cette entrée et donc ses réglages inline.** Après enable,
 le délai revient à 45 minutes ; rappeler `setInterval` pour le personnaliser.

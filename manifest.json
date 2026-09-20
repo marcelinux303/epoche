@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "id": "marcelinux.ops-pulse",
-  "name": "Ops Pulse",
+  "id": "marcelinux.epoche",
+  "name": "Epoché",
   "version": "1.0.0",
   "author": "marcelinux",
   "license": "MIT",
