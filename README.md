@@ -1,119 +1,180 @@
-# Epoché — Omarchy Quattro
+# Epoché
 
-Plugin natif `marcelinux.epoche`, version 1.0.0, auteur marcelinux, licence
-[MIT](LICENSE). Une carte discrète propose une des 30 phrases françaises locales,
-réparties en DEV, SYS et AI. Aucune phrase ne prétend connaître l’état du système.
+> A moment of reflection between signal and action.
 
-## Architecture et sécurité
+Epoché is a native Omarchy plugin that occasionally surfaces a short thought
+about development, systems and operations, or AI engineering. It creates a
+brief pause without behaving like an alert, assistant, or productivity coach.
 
-Un unique plugin `panel`, `keepLoaded: true`, charge `Pulse.qml` dans le processus
-QML/Quickshell d’`omarchy-shell`. `PulseCard.qml` utilise `qs.Commons`, `qs.Ui`,
-`BorderSurface` et les tokens du thème. `PulseModel.js` contient la logique pure,
-évaluée telle quelle par les tests Node. Le corpus UTF-8 est dans
-`share/pulses.json`.
+The name comes from the Greek ἐποχή: suspending judgment for a moment before
+reaching a conclusion.
 
-Le runtime du plugin ne lance aucun processus, commande ou binaire externe :
-aucun `notify-send`, service systemd, accès réseau ou télémétrie. Il lit seulement
-son corpus et `~/.config/omarchy/shell.json` via `FileView`. Le réglage demandé
-par l’utilisateur est transmis à la façade `shell.updateEntryInline`, avec
-l’entrée complète et ses éventuels autres champs conservés.
+## Preview
 
-**Un plugin Omarchy s’exécute non sandboxé dans omarchy-shell.** La façade est
-restreinte, mais ce n’est pas une isolation de sécurité. Examiner les sources
-avant installation et les changements avant mise à jour. Les composants partagés
-Omarchy restent ceux du host, avec leur propre fonctionnement.
+![Epoché running on Omarchy](assets/preview.png)
 
-## Comportement
+## Why Epoché?
 
-Le premier Pulse arrive après un intervalle complet : 45 minutes par défaut.
-Une ouverture manuelle remplace la carte et redémarre cet intervalle. Les valeurs
-numériques, y compris les chaînes reçues par IPC, sont arrondies à la minute et
-bornées entre 1 et 1440 ; les valeurs non numériques sont refusées. Un réglage
-absent ou invalide à la lecture revient à 45 minutes.
+Technical work produces a constant stream of signals. Epoché interrupts that
+stream only briefly, with a calm observation intended to remain useful beyond
+a specific tool, incident, or trend.
 
-Une seule demande manuelle est conservée pendant le chargement asynchrone et
-l’injection tardive du host. Un corpus vide, illisible ou invalide laisse le
-plugin inactif, sans nouvelle tentative automatique. Il n’y a pas de polling.
-Le tirage évite la répétition immédiate (sauf corpus réduit à une seule phrase).
-La durée de lecture dépend du texte, entre 5 et 12 secondes.
+Its bundled corpus is curated rather than collected as an unrestricted set of
+quotes or tips. The 72 thoughts are divided equally between:
 
-Une seule `PanelWindow` passive apparaît en haut-centre de l’écran focalisé au
-moment de l’ouverture, ou du premier écran disponible. Sans écran, rien ne
-s’affiche ; la disparition de l’écran cible ferme la carte. La marge tient
-compte d’une barre haute visible via `shell.bar`. La surface Overlay ignore les
-zones exclusives, laisse traverser les clics et ne prend aucun focus clavier.
-La carte se dimensionne naturellement, sans troncature, avec un fondu de
-160 ms ; la fenêtre reste visible pendant la sortie. Aucun blur ni shader.
+- **DEV** — software design, code, testing, review, and maintenance;
+- **SYS** — systems, operations, reliability, and infrastructure;
+- **AI** — models, agents, evaluation, uncertainty, and automation.
 
-## Installation future et utilisation
+## Features
 
-Les commandes ci-dessous sont destinées à une utilisation ultérieure dans une
-session Omarchy Quattro ; elles ne font pas partie des tests. Remplacer `<url>`
-par l’URL Git publiée du dépôt.
+- Native Omarchy/Quickshell integration
+- Einklammerung presentation with two open corner marks
+- Passive, click-through, top-center appearance
+- Local and offline corpus of 72 curated thoughts
+- 24 thoughts each for DEV, SYS, and AI
+- English and French catalogs
+- Automatic locale detection with English fallback
+- Configurable display interval
+- No immediate repetition when the corpus permits another choice
+- No network access, telemetry, analytics, or runtime LLM
+
+## Installation
+
+Install and enable Epoché directly from its public GitHub repository:
 
 ```sh
-omarchy plugin add <url> --enable
-omarchy-shell shell summon marcelinux.epoche
-omarchy-shell shell call marcelinux.epoche setInterval 60
+omarchy plugin add https://github.com/marcelinux303/epoche.git --enable
 ```
 
-Gestion du plugin :
+The permanent plugin ID is `io.github.marcelinux303.epoche`.
+
+## Behavior
+
+Epoché displays one thought on the focused screen, or on the first available
+screen when no focused screen can be resolved. Each thought remains visible for
+approximately 5–12 seconds according to its length.
+
+The default interval is 45 minutes. Repeated summons replace the pending
+thought without building an animation queue, and closing the panel cancels
+deferred work. The surface does not take keyboard focus and does not reserve
+screen space.
+
+## Usage and configuration
+
+Summon a thought manually:
 
 ```sh
-omarchy plugin disable marcelinux.epoche
-omarchy plugin enable marcelinux.epoche
-omarchy plugin update marcelinux.epoche
-omarchy plugin remove marcelinux.epoche
+omarchy-shell shell summon io.github.marcelinux303.epoche
 ```
 
-Le réglage est enregistré dans l’objet d’identifiant `marcelinux.epoche` du
-tableau `plugins` de `~/.config/omarchy/shell.json`, sous `intervalMinutes`.
-**Disable supprime cette entrée et donc ses réglages inline.** Après enable,
-le délai revient à 45 minutes ; rappeler `setInterval` pour le personnaliser.
-Le plugin ne recrée pas une entrée supprimée lors d’un appel de réglage.
+Use automatic language selection, which is the V1 default:
 
-## Migration manuelle du prototype
+```sh
+omarchy-shell shell call io.github.marcelinux303.epoche setLanguage auto
+```
 
-Aucune migration automatique n’est fournie. Avant d’activer le plugin, arrêter
-et désactiver manuellement l’ancien timer utilisateur `ops-pulse.timer`, puis
-arrêter son service `ops-pulse.service`. Après vérification de leur arrêt,
-supprimer manuellement uniquement les copies du prototype :
+Select English or French explicitly:
 
-- `~/.local/bin/ops-pulse`
-- `~/.local/share/ops-pulse/pulses.txt`
-- `~/.config/systemd/user/ops-pulse.service`
-- `~/.config/systemd/user/ops-pulse.timer`
+```sh
+omarchy-shell shell call io.github.marcelinux303.epoche setLanguage en
+omarchy-shell shell call io.github.marcelinux303.epoche setLanguage fr
+```
 
-Recharger ensuite manuellement le gestionnaire systemd utilisateur ; nettoyer
-si nécessaire l’état d’échec de ces seules unités. Ne supprimer le répertoire
-du corpus que s’il est vide. Ces opérations ne sont ni exécutées par le plugin,
-ni par les tests, ni par la conversion du dépôt. Les copies déjà installées
-restent inchangées. Éviter de faire fonctionner simultanément les deux versions.
+The language override is runtime-only in V1. A change applies to the next
+appearance and does not replace a thought that is already visible.
 
-## Contrôles avant publication
+Change the interval in minutes:
 
-Depuis le dépôt, sans installation, affichage ou modification du HOME :
+```sh
+omarchy-shell shell call io.github.marcelinux303.epoche setInterval 60
+```
+
+The accepted interval range is 1–1440 minutes. The default is 45 minutes.
+
+## Languages
+
+Epoché V1 supports:
+
+- `auto` — checks the ordered UI language list and then the current locale;
+- `en` — English;
+- `fr` — French.
+
+If no supported locale is found, Epoché uses English. If a French catalog entry
+is unavailable or invalid, the matching English thought is used. Both catalogs
+are bundled with the plugin; no translation service or external API is
+contacted.
+
+## Privacy and security
+
+Epoché is local-first and offline. Its V1 runtime:
+
+- makes no network requests;
+- collects no data;
+- uses no telemetry or analytics;
+- performs no behavioral tracking or machine diagnostics;
+- runs no AI model or LLM;
+- executes no shell command or external process;
+- reads its thought corpus from files bundled with the plugin.
+
+Omarchy plugins execute unsandboxed with the user's permissions inside the
+long-running shell process. Users should review plugin source and changes before
+installation or update. Epoché minimizes its capabilities, but it is not a
+security sandbox.
+
+## Removal
+
+Remove Epoché through the Omarchy plugin manager:
+
+```sh
+omarchy plugin remove io.github.marcelinux303.epoche
+```
+
+## Contributing
+
+Issues and focused pull requests are welcome.
+
+The corpus is curated rather than an unrestricted quote collection. A proposed
+thought should:
+
+- use exactly one category: DEV, SYS, or AI;
+- be short, technical, reflective, and non-prescriptive;
+- avoid direct address and assumptions about a user or machine;
+- remain useful over time where possible;
+- avoid alerts, diagnoses, productivity coaching, and motivational language;
+- provide idiomatic English and French versions with conceptual parity;
+- use a unique, stable lowercase kebab-case ID;
+- preserve UTF-8/NFC text and complete EN/FR ID coverage.
+
+Corpus changes should pass the automated checks and receive editorial review.
+
+## Development and validation
+
+Epoché has no build step or npm dependency. From a clean repository checkout,
+run:
 
 ```sh
 node tests/check.mjs
 node --check PulseModel.js
 node --check tests/check.mjs
+node --check tests/v1-model.mjs
+node --check tests/v1-lifecycle.mjs
+node --check tests/v1-ui.mjs
+/usr/lib/qt6/bin/qmlformat Pulse.qml > /tmp/Pulse.qml.formatted
+/usr/lib/qt6/bin/qmlformat PulseCard.qml > /tmp/PulseCard.qml.formatted
+/usr/lib/qt6/bin/qmllint Pulse.qml PulseCard.qml
 omarchy plugin validate .
 git diff --check
-git diff
-git status --short
 ```
 
-Les tests utilisent uniquement les API standard Node et couvrent le corpus,
-les cas 0/1/N, le tirage, les bornes, les réglages et les garde-fous statiques.
-Le validateur contrôle le manifest et les points d’entrée, pas le rendu.
+`qmllint` may report warnings for runtime-provided Omarchy/Quickshell imports and
+dynamic theme properties when it runs outside the complete shell environment.
+It should still exit successfully without a syntax error.
 
-Pour `qmllint`, ajouter `/usr/lib/qt6/qml` aux imports et un répertoire contenant
-`qs/Commons` et `qs/Ui` issus du shell installé. Le préfixe `qs` est fourni par
-Quickshell à l’exécution. Les métadonnées installées peuvent produire des
-avertissements sur `PanelWindow`, `margins` et les membres dynamiques des tokens
-`QtObject` ; ne pas présenter ce contrôle comme une validation graphique.
-Avant publication, prévoir séparément une revue visuelle autorisée dans une
-session de test : thèmes, multi-écran/déconnexion, barre haute, fondu de sortie,
-remplacement manuel et désactivation/réactivation. Aucun de ces essais ne doit
-être déclenché par les tests hermétiques.
+## Project information
+
+- Plugin ID: `io.github.marcelinux303.epoche`
+- Version: `1.0.0`
+- Plugin kind: `panel`
+- License: [MIT](LICENSE)
+- Repository: `https://github.com/marcelinux303/epoche`
