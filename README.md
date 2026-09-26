@@ -1,119 +1,187 @@
-# Epoché — Omarchy Quattro
+# Epoché
 
-Plugin natif `marcelinux.epoche`, version 1.0.0, auteur marcelinux, licence
-[MIT](LICENSE). Une carte discrète propose une des 30 phrases françaises locales,
-réparties en DEV, SYS et AI. Aucune phrase ne prétend connaître l’état du système.
+Epoché is a native Omarchy panel plugin that presents a brief general thought
+about DEV, SYS, or AI.
 
-## Architecture et sécurité
+> Epoché — A moment of reflection between signal and action.
 
-Un unique plugin `panel`, `keepLoaded: true`, charge `Pulse.qml` dans le processus
-QML/Quickshell d’`omarchy-shell`. `PulseCard.qml` utilise `qs.Commons`, `qs.Ui`,
-`BorderSurface` et les tokens du thème. `PulseModel.js` contient la logique pure,
-évaluée telle quelle par les tests Node. Le corpus UTF-8 est dans
-`share/pulses.json`.
+The plugin is local, offline, passive, and non-interactive while displayed. It
+does not inspect the machine or the user, make recommendations, diagnose the
+system, collect data, use analytics, contact a network service, or run a model
+or external process at runtime.
 
-Le runtime du plugin ne lance aucun processus, commande ou binaire externe :
-aucun `notify-send`, service systemd, accès réseau ou télémétrie. Il lit seulement
-son corpus et `~/.config/omarchy/shell.json` via `FileView`. Le réglage demandé
-par l’utilisateur est transmis à la façade `shell.updateEntryInline`, avec
-l’entrée complète et ses éventuels autres champs conservés.
+Status: V1 release candidate implementation. The bilingual corpus is still a
+**candidate requiring user review**; it is not editorially frozen.
 
-**Un plugin Omarchy s’exécute non sandboxé dans omarchy-shell.** La façade est
-restreinte, mais ce n’est pas une isolation de sécurité. Examiner les sources
-avant installation et les changements avant mise à jour. Les composants partagés
-Omarchy restent ceux du host, avec leur propre fonctionnement.
+## Identity and compatibility
 
-## Comportement
+- Plugin ID: `io.github.marcelinux303.epoche`
+- Version: `1.0.0`
+- Kind: `panel`
+- Runtime: Omarchy shell / Quickshell
+- License: [MIT](LICENSE)
 
-Le premier Pulse arrive après un intervalle complet : 45 minutes par défaut.
-Une ouverture manuelle remplace la carte et redémarre cet intervalle. Les valeurs
-numériques, y compris les chaînes reçues par IPC, sont arrondies à la minute et
-bornées entre 1 et 1440 ; les valeurs non numériques sont refusées. Un réglage
-absent ou invalide à la lecture revient à 45 minutes.
+The historical native plugin `marcelinux.ops-pulse`, the older Bash/systemd
+prototype, and the disposable visual prototypes are separate artifacts. This
+repository does not remove or migrate them automatically.
 
-Une seule demande manuelle est conservée pendant le chargement asynchrone et
-l’injection tardive du host. Un corpus vide, illisible ou invalide laisse le
-plugin inactif, sans nouvelle tentative automatique. Il n’y a pas de polling.
-Le tirage évite la répétition immédiate (sauf corpus réduit à une seule phrase).
-La durée de lecture dépend du texte, entre 5 et 12 secondes.
+## Design and behavior
 
-Une seule `PanelWindow` passive apparaît en haut-centre de l’écran focalisé au
-moment de l’ouverture, ou du premier écran disponible. Sans écran, rien ne
-s’affiche ; la disparition de l’écran cible ferme la carte. La marge tient
-compte d’une barre haute visible via `shell.bar`. La surface Overlay ignore les
-zones exclusives, laisse traverser les clics et ne prend aucun focus clavier.
-La carte se dimensionne naturellement, sans troncature, avec un fondu de
-160 ms ; la fenêtre reste visible pendant la sortie. Aucun blur ni shader.
+The V1 visual design is frozen to Einklammerung A:
 
-## Installation future et utilisation
+- top-center placement;
+- `Epoché · CATEGORY` header;
+- top-left and bottom-right open corners;
+- native Omarchy popup RGB with native alpha multiplied by `0.94`;
+- no full border, blur, shadow, shader, or decorative effect;
+- click-through Overlay layer, no keyboard focus, ignored exclusive zones;
+- exactly one explicit `PanelWindow` under a non-visual `ShellRoot`.
 
-Les commandes ci-dessous sont destinées à une utilisation ultérieure dans une
-session Omarchy Quattro ; elles ne font pas partie des tests. Remplacer `<url>`
-par l’URL Git publiée du dépôt.
+The lifecycle is bounded: IDLE → APPEAR → HOLD → DISAPPEAR → IDLE. Repeated
+summons keep only the latest pending thought. Close invalidates deferred work
+and always wins. Content and geometry change only while all visual groups are
+hidden. The focused screen is used when available, otherwise the first screen;
+removing the target screen closes the surface.
+
+A thought remains visible for 5–12 seconds according to text length. The default
+periodic interval is 45 minutes and may be configured from 1 to 1440 minutes.
+Selection avoids immediate repetition when more than one thought exists.
+
+## Languages and local corpus
+
+The plugin ships two local UTF-8 catalogs:
+
+- `share/thoughts/en.json`: canonical IDs, categories, and English text;
+- `share/thoughts/fr.json`: French text keyed by the same IDs.
+
+The current candidate contains 72 thoughts: 24 DEV, 24 SYS, and 24 AI. Release
+checks require complete EN/FR ID coverage. At runtime, an unreadable or invalid
+French catalog falls back to English; an isolated missing French entry falls
+back to the matching English entry. Invalid canonical English disables new
+selection.
+
+Language preference is runtime-only in V1:
 
 ```sh
-omarchy plugin add <url> --enable
-omarchy-shell shell summon marcelinux.epoche
-omarchy-shell shell call marcelinux.epoche setInterval 60
+omarchy-shell shell call io.github.marcelinux303.epoche setLanguage auto
+omarchy-shell shell call io.github.marcelinux303.epoche setLanguage en
+omarchy-shell shell call io.github.marcelinux303.epoche setLanguage fr
 ```
 
-Gestion du plugin :
+`auto` checks the ordered UI language list, then the current locale, and falls
+back to English. A language change applies to the next appearance and does not
+replace a thought already visible.
+
+## Installation and use
+
+No publication is performed by this repository state. Once a public Git URL is
+approved, installation is expected to use:
 
 ```sh
-omarchy plugin disable marcelinux.epoche
-omarchy plugin enable marcelinux.epoche
-omarchy plugin update marcelinux.epoche
-omarchy plugin remove marcelinux.epoche
+omarchy plugin add <git-url> --enable
+omarchy-shell shell summon io.github.marcelinux303.epoche
+omarchy-shell shell call io.github.marcelinux303.epoche setInterval 60
 ```
 
-Le réglage est enregistré dans l’objet d’identifiant `marcelinux.epoche` du
-tableau `plugins` de `~/.config/omarchy/shell.json`, sous `intervalMinutes`.
-**Disable supprime cette entrée et donc ses réglages inline.** Après enable,
-le délai revient à 45 minutes ; rappeler `setInterval` pour le personnaliser.
-Le plugin ne recrée pas une entrée supprimée lors d’un appel de réglage.
+Management commands:
 
-## Migration manuelle du prototype
+```sh
+omarchy plugin disable io.github.marcelinux303.epoche
+omarchy plugin enable io.github.marcelinux303.epoche
+omarchy plugin update io.github.marcelinux303.epoche
+omarchy plugin remove io.github.marcelinux303.epoche
+```
 
-Aucune migration automatique n’est fournie. Avant d’activer le plugin, arrêter
-et désactiver manuellement l’ancien timer utilisateur `ops-pulse.timer`, puis
-arrêter son service `ops-pulse.service`. Après vérification de leur arrêt,
-supprimer manuellement uniquement les copies du prototype :
+`setInterval` updates the plugin's inline `intervalMinutes` setting through the
+Omarchy shell facade while preserving other fields. Disabling a plugin may
+remove its inline settings; after re-enabling, set the interval again if needed.
+
+## Runtime architecture and security
+
+- `Pulse.qml`: host API, lifecycle, timers, screen choice, and fixed local file
+  loading.
+- `PulseCard.qml`: frozen visual composition only.
+- `PulseModel.js`: pure catalog validation, locale/fallback logic, selection,
+  duration, and settings helpers.
+- `share/thoughts/`: bundled EN/FR corpus candidate.
+
+The runtime reads only bundled catalogs and
+`~/.config/omarchy/shell.json` using `FileView`. It contains no `Process`, shell
+execution, HTTP client, WebSocket, external API, telemetry, analytics,
+behavioral tracking, diagnostics, or persistence of language choice.
+
+Omarchy plugins execute unsandboxed inside `omarchy-shell`. Review source changes
+before installation or update; this architecture minimizes capabilities but is
+not a security sandbox.
+
+## Historical migration plan
+
+Do not remove the old native `marcelinux.ops-pulse` plugin or the older
+Bash/systemd prototype until Epoché has passed real-desktop review and the user
+explicitly approves retirement.
+
+Recommended staged migration:
+
+1. Install Epoché without deleting historical components.
+2. Avoid simultaneous automatic display by disabling only the old component
+   chosen for comparison.
+3. Validate Epoché EN/FR, lifecycle, focus, click-through, screen handling, and
+   uninstall behavior on the real desktop.
+4. Obtain explicit approval for the retirement plan.
+5. Only then disable/remove the approved historical component using its own
+   documented mechanism.
+
+Possible old Bash/systemd paths, to be touched only after approval, are:
 
 - `~/.local/bin/ops-pulse`
 - `~/.local/share/ops-pulse/pulses.txt`
 - `~/.config/systemd/user/ops-pulse.service`
 - `~/.config/systemd/user/ops-pulse.timer`
 
-Recharger ensuite manuellement le gestionnaire systemd utilisateur ; nettoyer
-si nécessaire l’état d’échec de ces seules unités. Ne supprimer le répertoire
-du corpus que s’il est vide. Ces opérations ne sont ni exécutées par le plugin,
-ni par les tests, ni par la conversion du dépôt. Les copies déjà installées
-restent inchangées. Éviter de faire fonctionner simultanément les deux versions.
+Epoché performs none of these operations itself.
 
-## Contrôles avant publication
+## Contributing to the corpus
 
-Depuis le dépôt, sans installation, affichage ou modification du HOME :
+Treat English IDs as the semantic contract. A corpus change should:
+
+1. use a stable lowercase kebab-case ID;
+2. assign exactly one category: DEV, SYS, or AI;
+3. remain general rather than claiming knowledge of a person or machine;
+4. avoid advice, alerts, diagnosis, productivity coaching, or activity-based
+   language;
+5. provide idiomatic English and French expressions of the same concept;
+6. preserve NFC text, local/offline delivery, and complete ID parity;
+7. pass tests and receive editorial review before being described as final.
+
+Phrases such as “Your system…”, “You should…”, “We noticed…”, or “Based on your
+activity…” are outside the product philosophy.
+
+## Validation
+
+From the repository:
 
 ```sh
 node tests/check.mjs
 node --check PulseModel.js
 node --check tests/check.mjs
-omarchy plugin validate .
+node --check tests/v1-model.mjs
+node --check tests/v1-lifecycle.mjs
+node --check tests/v1-ui.mjs
+/usr/lib/qt6/bin/qmlformat Pulse.qml > /tmp/Pulse.qml.formatted
+/usr/lib/qt6/bin/qmlformat PulseCard.qml > /tmp/PulseCard.qml.formatted
+/usr/lib/qt6/bin/qmllint Pulse.qml PulseCard.qml
+omarchy plugin validate <clean-package-directory>
 git diff --check
-git diff
-git status --short
 ```
 
-Les tests utilisent uniquement les API standard Node et couvrent le corpus,
-les cas 0/1/N, le tirage, les bornes, les réglages et les garde-fous statiques.
-Le validateur contrôle le manifest et les points d’entrée, pas le rendu.
+`qmllint` may warn about the runtime-provided `qs.Commons` import, dynamically
+provided theme singletons, and Quickshell layer-shell types when run without the
+shell import environment. It must still exit successfully and report no syntax
+error. Validate the plugin from a clean package directory because `.prototype/`
+is intentionally excluded from the product but may contain local symlinks that
+the package validator rejects.
 
-Pour `qmllint`, ajouter `/usr/lib/qt6/qml` aux imports et un répertoire contenant
-`qs/Commons` et `qs/Ui` issus du shell installé. Le préfixe `qs` est fourni par
-Quickshell à l’exécution. Les métadonnées installées peuvent produire des
-avertissements sur `PanelWindow`, `margins` et les membres dynamiques des tokens
-`QtObject` ; ne pas présenter ce contrôle comme une validation graphique.
-Avant publication, prévoir séparément une revue visuelle autorisée dans une
-session de test : thèmes, multi-écran/déconnexion, barre haute, fondu de sortie,
-remplacement manuel et désactivation/réactivation. Aucun de ces essais ne doit
-être déclenché par les tests hermétiques.
+Real release review must additionally verify one layer surface, no regular or
+floating Quickshell client, top-center geometry, input passthrough, unchanged
+keyboard focus, lifecycle interruption cases, EN/FR/English fallback, longest
+texts, light and dark backgrounds, and clean disable/remove behavior.

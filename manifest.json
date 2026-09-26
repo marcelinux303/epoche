@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "marcelinux.epoche",
+  "id": "io.github.marcelinux303.epoche",
   "name": "Epoché",
   "version": "1.0.0",
   "author": "marcelinux",
   "license": "MIT",
-  "description": "Une pause discrète en français pour DevOps, SysOps et AIOps.",
+  "description": "A local, offline moment of reflection between signal and action.",
   "kinds": ["panel"],
   "keepLoaded": true,
   "entryPoints": { "panel": "Pulse.qml" }
