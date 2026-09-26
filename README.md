@@ -41,7 +41,9 @@ quotes or tips. The 72 thoughts are divided equally between:
 
 ## Installation
 
-Install and enable Epoché directly from its public GitHub repository:
+Epoché is available on the official [Omarchy Plugin Marketplace](https://plugins.omarchy.org/plugin.html?id=io.github.marcelinux303.epoche).
+
+Install and enable Epoché directly with:
 
 ```sh
 omarchy plugin add https://github.com/marcelinux303/epoche.git --enable
@@ -178,3 +180,4 @@ It should still exit successfully without a syntax error.
 - Plugin kind: `panel`
 - License: [MIT](LICENSE)
 - Repository: `https://github.com/marcelinux303/epoche`
+- Marketplace: [Omarchy Plugins](https://plugins.omarchy.org/plugin.html?id=io.github.marcelinux303.epoche)
